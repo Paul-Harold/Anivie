@@ -2,10 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-// ==========================================
-// 1. DEFINE THE SCHEMA (The Blueprint)
-// ==========================================
-// This tells MongoDB exactly what data to expect
+// 1. The Schema (Blueprint)
 const watchlistSchema = new mongoose.Schema({
   apiId: Number,
   title: String,
@@ -15,34 +12,42 @@ const watchlistSchema = new mongoose.Schema({
   userRating: Number
 });
 
-// Create the Model (This automatically creates the 'watchlistitems' collection in the DB)
 const WatchlistItem = mongoose.model('WatchlistItem', watchlistSchema);
 
 // ==========================================
-// 2. CREATE THE ROUTES
+// 🚨 THE MISSING PIECE: THE GET ROUTE 🚨
 // ==========================================
-
-// POST Route: Add a new anime to the database
-// Note: The path is just '/' because server.js already maps this file to '/api/watchlist'
-router.post('/', async (req, res) => {
+// GET: Fetch all items from the database
+router.get('/', async (req, res) => {
   try {
-    // Take the JSON data from Thunder Client (req.body)
-    const newItem = new WatchlistItem(req.body);
-
-    // Save it permanently to MongoDB
-    const savedItem = await newItem.save();
-
-    // Send back a success status and the saved data (with the new _id)
-    res.status(201).json(savedItem);
-    
+    const items = await WatchlistItem.find(); // Fetches everything!
+    res.status(200).json(items);
   } catch (error) {
-    console.error("❌ Error saving item:", error.message);
-    res.status(500).json({ message: "Failed to save item", error: error.message });
+    res.status(500).json({ message: "Error fetching items", error: error.message });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  try {
+    // Find the item by its ID and destroy it
+    await WatchlistItem.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Anime deleted successfully!" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete item", error: error.message });
   }
 });
 
 // ==========================================
-// 3. EXPORT THE ROUTER
+// POST: Add a new anime to the database
 // ==========================================
-// This allows server.js to import these routes
+router.post('/', async (req, res) => {
+  try {
+    const newItem = new WatchlistItem(req.body);
+    const savedItem = await newItem.save();
+    res.status(201).json(savedItem);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to save item", error: error.message });
+  }
+});
+
 module.exports = router;
