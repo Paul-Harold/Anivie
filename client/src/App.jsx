@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AnimeCard from './components/AnimeCard';
+import SearchBar from './components/SearchBar'; // 🚨 NEW IMPORT
 
 function App() {
   const [watchlist, setWatchlist] = useState([]);
@@ -11,21 +12,31 @@ function App() {
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  // 🚨 NEW: This function filters the deleted anime out of our React state
+  // Removes a deleted card from the screen
   const removeAnimeFromUI = (deletedId) => {
     setWatchlist(watchlist.filter((anime) => anime._id !== deletedId));
   };
 
+  // 🚨 NEW: Adds a newly saved card to the screen instantly
+  const addAnimeToUI = (newAnime) => {
+    setWatchlist((prevWatchlist) => [...prevWatchlist, newAnime]);
+  };
+
   return (
-    <div style={{ padding: '20px', fontFamily: 'system-ui' }}>
+    <div style={{ padding: '20px', fontFamily: 'system-ui', maxWidth: '1200px', margin: '0 auto' }}>
       <h1>My Anime Watchlist 🍿</h1>
       
+      {/* 🚨 NEW: Render the Search Bar at the top! */}
+      <SearchBar onAdd={addAnimeToUI} />
+      
+      <hr style={{ borderColor: '#444', margin: '30px 0' }} />
+
+      <h2>My Saved List</h2>
       {watchlist.length === 0 ? (
-        <p>No anime found! The database is currently empty.</p>
+        <p>No anime found! Use the search bar above to add some.</p>
       ) : (
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
           {watchlist.map((anime) => (
-            // 🚨 NEW: Pass the cleanup function as a prop!
             <AnimeCard key={anime._id} anime={anime} onDelete={removeAnimeFromUI} />
           ))}
         </div>
