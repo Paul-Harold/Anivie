@@ -36,7 +36,19 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ message: "Failed to delete item", error: error.message });
   }
 });
-
+router.put('/:id', async (req, res) => {
+  try {
+    // findByIdAndUpdate takes 3 things: the ID, the new data, and an option to return the updated version
+    const updatedItem = await WatchlistItem.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } 
+    );
+    res.status(200).json(updatedItem);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update item", error: error.message });
+  }
+});
 // ==========================================
 // POST: Add a new anime to the database
 // ==========================================
