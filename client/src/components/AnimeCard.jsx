@@ -1,53 +1,48 @@
-import axios from 'axios'; // 🚨 NEW: Import axios
+import axios from 'axios';
 
-// 🚨 NEW: Accept the 'onDelete' prop
 function AnimeCard({ anime, onDelete }) {
-  
-  // 🚨 NEW: The real delete function
   const handleDelete = async () => {
     try {
-      // 1. Tell the database to destroy it
       await axios.delete(`http://localhost:5000/api/watchlist/${anime._id}`);
-      
-      // 2. Tell App.jsx to remove it from the screen
       onDelete(anime._id);
     } catch (error) {
       console.error("Error deleting anime:", error);
-      alert("Failed to delete. Is the server running?");
     }
   };
 
   return (
-    <div style={{ 
-      border: '1px solid #ccc', 
-      padding: '15px', 
-      borderRadius: '10px',
-      width: '200px',
-      backgroundColor: '#1a1a1a',
-      color: 'white',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      <img src={anime.posterUrl} alt={anime.title} style={{ width: '100%', borderRadius: '5px' }} />
-      <h3>{anime.title}</h3>
-      <p style={{ margin: '5px 0' }}><strong>Status:</strong> {anime.watchStatus}</p>
-      <p style={{ margin: '5px 0' }}><strong>Rating:</strong> {anime.userRating}/10</p>
+    <div className="bg-ani-card rounded-lg w-[200px] flex flex-col overflow-hidden shadow-lg transition-transform hover:scale-105 duration-200">
       
-      <button 
-        onClick={handleDelete}
-        style={{
-          marginTop: 'auto',
-          padding: '10px',
-          backgroundColor: '#ff4d4d',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontWeight: 'bold'
-        }}
-      >
-        Remove
-      </button>
+      {/* Image Container */}
+      <div className="h-[280px] overflow-hidden">
+        <img 
+          src={anime.posterUrl} 
+          alt={anime.title} 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      {/* Text Content */}
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="text-ani-text font-semibold text-base mb-2 line-clamp-2">
+          {anime.title}
+        </h3>
+        
+        <p className="text-ani-subtext text-sm mb-1">
+          Status: <span className="text-ani-text">{anime.watchStatus}</span>
+        </p>
+        <p className="text-ani-subtext text-sm mb-4">
+          Rating: <span className="text-ani-text">{anime.userRating}/10</span>
+        </p>
+        
+        {/* Button */}
+        <button 
+          onClick={handleDelete}
+          className="mt-auto p-2 border border-ani-red text-ani-red rounded font-semibold text-sm transition-colors hover:bg-ani-red hover:text-white"
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 }

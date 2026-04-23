@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* We'll keep our scrollbar styling here since Tailwind doesn't do scrollbars out of the box */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b1622; }
+::-webkit-scrollbar-thumb { background: #151f2e; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3db4f2; }
+
+body {
+  @apply bg-ani-dark text-ani-text antialiased;
+}
