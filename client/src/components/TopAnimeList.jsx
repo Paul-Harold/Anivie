@@ -16,7 +16,7 @@ function TopAnimeList({ onAdd }) {
     <div className="mb-10 mt-12">
       {/* Header section with the "View All" mock link */}
       <div className="flex justify-between items-end mb-6">
-        <h2 className="text-2xl font-bold text-ani-text">Top 100 Anime</h2>
+        <h2 className="text-2xl font-bold text-ani-text">Top Anime</h2>
         <button onClick={() => window.location.href = '/category/top100'}className="text-ani-subtext text-sm font-semibold hover:text-ani-text transition-colors">
           View All
         </button>

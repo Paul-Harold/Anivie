@@ -25,7 +25,6 @@ function AnimeCarousel({ title, apiEndpoint, onAdd, delay = 0, categoryLink }) {
         )}
       </div>
       
-      <h2 className="text-xl font-bold text-ani-text mb-4">{title}</h2>
       
       {/* The Horizontal Scrolling Container */}
       <div className="flex overflow-x-auto gap-4 pb-4 snap-x">
