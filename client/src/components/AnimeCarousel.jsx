@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-function AnimeCarousel({ title, apiEndpoint, onAdd }) {
+function AnimeCarousel({ title, apiEndpoint, onAdd, delay = 0, categoryLink }) {
   const [animeList, setAnimeList] = useState([]);
 
   useEffect(() => {
@@ -12,7 +13,18 @@ function AnimeCarousel({ title, apiEndpoint, onAdd }) {
   }, [apiEndpoint]);
 
   return (
+    
     <div className="mb-10">
+
+        <div className="flex justify-between items-end mb-4">
+        <h2 className="text-xl font-bold text-ani-text">{title}</h2>
+        {categoryLink && (
+          <Link to={categoryLink} className="text-ani-subtext text-sm font-semibold hover:text-ani-text transition-colors">
+            View All
+          </Link>
+        )}
+      </div>
+      
       <h2 className="text-xl font-bold text-ani-text mb-4">{title}</h2>
       
       {/* The Horizontal Scrolling Container */}

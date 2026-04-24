@@ -37,6 +37,7 @@ function Dashboard({ onAnimeAdded }) {
         apiEndpoint="https://api.jikan.moe/v4/top/anime?filter=airing&limit=15" 
         onAdd={handleAddToDatabase} 
         delay={0}
+        categoryLink="/category/trending"
       />
       
       <AnimeCarousel 
@@ -44,9 +45,10 @@ function Dashboard({ onAnimeAdded }) {
         apiEndpoint="https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=15" 
         onAdd={handleAddToDatabase} 
         delay={1000} 
+        categoryLink="/category/popular"
       />
       
-      <TopAnimeList onAdd={handleAddToDatabase} />
+      <TopAnimeList onAdd={handleAddToDatabase} categoryLink="/category/top100" />
     </div>
   );
 }
