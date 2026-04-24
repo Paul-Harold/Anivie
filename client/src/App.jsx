@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AnimeCard from './components/AnimeCard';
-import SearchBar from './components/SearchBar'; // 🚨 NEW IMPORT
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const [watchlist, setWatchlist] = useState([]);
@@ -23,15 +23,15 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'system-ui', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>My Anime Watchlist 🍿</h1>
+    <div className="p-5 font-sans max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">My Anime Watchlist 🍿</h1>
       
-      {/* 🚨 NEW: Render the Search Bar at the top! */}
-      <SearchBar onAdd={addAnimeToUI} />
+      {/* 🚨 NEW: Our massive Discovery Engine */}
+      <Dashboard onAnimeAdded={addAnimeToUI} />
       
-      <hr style={{ borderColor: '#444', margin: '30px 0' }} />
-
-      <h2>My Saved List</h2>
+      <hr className="border-gray-700 my-8" />
+      
+      <h2 className="text-xl font-bold text-ani-text mb-4">My Saved List</h2>
       {watchlist.length === 0 ? (
         <p>No anime found! Use the search bar above to add some.</p>
       ) : (
