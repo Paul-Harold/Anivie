@@ -26,7 +26,7 @@ function TopAnimeList({ onAdd }) {
       <div className="flex flex-col gap-4">
         {topAnime.map((anime, index) => (
           <div 
-            key={anime.mal_id} 
+            key={`${anime.mal_id}-${index}`}
             className="bg-ani-card rounded-lg p-4 flex gap-4 items-center shadow-sm transition-transform hover:scale-[1.01]"
           >
             

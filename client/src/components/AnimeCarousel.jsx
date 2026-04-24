@@ -17,8 +17,8 @@ function AnimeCarousel({ title, apiEndpoint, onAdd }) {
       
       {/* The Horizontal Scrolling Container */}
       <div className="flex overflow-x-auto gap-4 pb-4 snap-x">
-        {animeList.map((anime) => (
-          <div key={anime.mal_id} className="min-w-[140px] max-w-[140px] snap-start flex flex-col group">
+        {animeList.map((anime, index) => (
+          <div key={`${anime.mal_id}-${index}`} className="min-w-[140px] max-w-[140px] snap-start flex flex-col group">
             
             {/* Poster Image with a subtle zoom hover effect */}
             <div className="h-[200px] overflow-hidden rounded-lg mb-2 relative shadow-lg">

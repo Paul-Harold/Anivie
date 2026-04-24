@@ -32,22 +32,18 @@ function Dashboard({ onAnimeAdded }) {
       {/* 🚨 NEW: The Advanced Filter Engine */}
       <AdvancedSearch onAdd={handleAddToDatabase} />
       
-      <AnimeCarousel 
+<AnimeCarousel 
         title="Trending Now" 
         apiEndpoint="https://api.jikan.moe/v4/top/anime?filter=airing&limit=15" 
         onAdd={handleAddToDatabase} 
-      />
-      
-      <AnimeCarousel 
-        title="Upcoming Next Season" 
-        apiEndpoint="https://api.jikan.moe/v4/seasons/upcoming?limit=15" 
-        onAdd={handleAddToDatabase} 
+        delay={0}
       />
       
       <AnimeCarousel 
         title="All Time Popular" 
         apiEndpoint="https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=15" 
         onAdd={handleAddToDatabase} 
+        delay={1000} 
       />
       
       <TopAnimeList onAdd={handleAddToDatabase} />
