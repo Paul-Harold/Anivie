@@ -1,6 +1,7 @@
-import AnimeCarousel from '../components/AnimeCarousel';
-import AdvancedSearch from '../components/AdvancedSearch';
-import TopAnimeList from '../components/TopAnimeList';
+import AnimeCarousel from '../components/Anime/AnimeCarousel';
+import AdvancedSearch from '../components/Anime/AdvancedSearch';
+import TopAnimeList from '../components/Anime/TopAnimeList';
+import AnimeSearchAndFilter from '../components/Anime/AnimeSearchAndFilter';
 import axios from 'axios';
 
 function Dashboard({ onAnimeAdded }) {
@@ -16,21 +17,27 @@ function Dashboard({ onAnimeAdded }) {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/watchlist', newAnimeData);
-      onAnimeAdded(response.data); 
-      alert(`Added ${newAnimeData.title} to your watchlist!`);
-    } catch (error) {
-      console.error("Error saving to database:", error);
-      alert("Failed to add anime.");
-    }
-  };
+          await axios.post('http://localhost:5000/api/watchlist', newAnimeData);
+          alert(`Added ${newAnimeData.title} to your watchlist!`);
+        } catch (error) {
+          // 🚨 NEW: Check if the error is our custom 400 Duplicate Error from the backend
+          if (error.response && error.response.status === 400) {
+            alert(`${newAnimeData.title} is already in your list!`);
+          } else {
+            // If it's a real crash (like the server being offline), show the generic error
+            console.error("Error saving to database:", error);
+            alert("Failed to add item.");
+          }
+        }
+      };
+
 
   return (
     <div className="max-w-6xl mx-auto py-6">
       <h1 className="text-3xl font-bold text-ani-text mb-8">Discover Anime</h1>
       
       {/* 🚨 NEW: The Advanced Filter Engine */}
-      <AdvancedSearch onAdd={handleAddToDatabase} />
+      <AnimeSearchAndFilter onAdd={handleAddToDatabase} />
       
 <AnimeCarousel 
         title="Trending Now" 

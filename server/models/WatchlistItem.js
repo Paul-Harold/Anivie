@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const watchlistItemSchema = new mongoose.Schema({
   apiId: { 
-    type: Number, 
+    type: String,
     required: true // We absolutely need this to fetch details later
   },
   title: { 

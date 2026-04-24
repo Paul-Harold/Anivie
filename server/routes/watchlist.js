@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 // 1. The Schema (Blueprint)
 const watchlistSchema = new mongoose.Schema({
-  apiId: Number,
+ apiId: String, 
   title: String,
   posterUrl: String,
   mediaType: String,
@@ -54,9 +54,19 @@ router.put('/:id', async (req, res) => {
 // ==========================================
 router.post('/', async (req, res) => {
   try {
+    // 🚨 NEW: 1. Check if the item already exists using its unique apiId
+    const existingItem = await WatchlistItem.findOne({ apiId: req.body.apiId });
+    
+    // 🚨 NEW: 2. If it exists, immediately stop and send a 400 Bad Request error
+    if (existingItem) {
+      return res.status(400).json({ message: "This item is already in your watchlist!" });
+    }
+
+    // 3. If it doesn't exist, proceed with saving it normally
     const newItem = new WatchlistItem(req.body);
     const savedItem = await newItem.save();
     res.status(201).json(savedItem);
+
   } catch (error) {
     res.status(500).json({ message: "Failed to save item", error: error.message });
   }
