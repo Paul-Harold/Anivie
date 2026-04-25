@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const verify = require('../middleware/auth'); // 🚨 Import our Bouncer!
 
-// 1. The Schema (Blueprint)
 const watchlistSchema = new mongoose.Schema({
- apiId: String, 
+  userId: { type: String, required: true }, // Tied to the logged-in user
+  apiId: String,
   title: String,
   posterUrl: String,
   mediaType: String,
@@ -16,69 +17,88 @@ const watchlistSchema = new mongoose.Schema({
 const WatchlistItem = mongoose.model('WatchlistItem', watchlistSchema);
 
 // ==========================================
-// 🚨 THE MISSING PIECE: THE GET ROUTE 🚨
+// GET: Fetch ONLY the logged-in user's list
 // ==========================================
-// GET: Fetch all items from the database
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
   try {
-    const items = await WatchlistItem.find(); // Fetches everything!
-    res.status(200).json(items);
+    // 🚨 Only find items where the userId matches the person logged in!
+    const list = await WatchlistItem.find({ userId: req.user.id });
+    res.json(list);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching items", error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
-router.get('/api/:apiId', async (req, res) => {
+
+// ==========================================
+// GET: Fetch a SINGLE item (for Details Page)
+// ==========================================
+router.get('/api/:apiId', verify, async (req, res) => {
   try {
-    // Searches your database for the specific TMDB or Jikan ID
-    const item = await WatchlistItem.findOne({ apiId: req.params.apiId });
-    res.status(200).json(item); // Will return null if you haven't added it to your list yet
+    // 🚨 Check if THIS user has THIS specific show
+    const item = await WatchlistItem.findOne({ apiId: req.params.apiId, userId: req.user.id });
+    res.status(200).json(item);
   } catch (error) {
     res.status(500).json({ message: "Error fetching item", error: error.message });
   }
 });
 
-router.delete('/:id', async (req, res) => {
-  try {
-    // Find the item by its ID and destroy it
-    await WatchlistItem.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: "Anime deleted successfully!" });
-  } catch (error) {
-    res.status(500).json({ message: "Failed to delete item", error: error.message });
-  }
-});
-router.put('/:id', async (req, res) => {
-  try {
-    // findByIdAndUpdate takes 3 things: the ID, the new data, and an option to return the updated version
-    const updatedItem = await WatchlistItem.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true } 
-    );
-    res.status(200).json(updatedItem);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to update item", error: error.message });
-  }
-});
 // ==========================================
-// POST: Add a new anime to the database
+// POST: Add new item to Watchlist
 // ==========================================
-router.post('/', async (req, res) => {
+router.post('/', verify, async (req, res) => {
   try {
-    // 🚨 NEW: 1. Check if the item already exists using its unique apiId
-    const existingItem = await WatchlistItem.findOne({ apiId: req.body.apiId });
-    
-    // 🚨 NEW: 2. If it exists, immediately stop and send a 400 Bad Request error
+    // Check if THIS user already added THIS show
+    const existingItem = await WatchlistItem.findOne({ apiId: req.body.apiId, userId: req.user.id });
     if (existingItem) {
-      return res.status(400).json({ message: "This item is already in your watchlist!" });
+      return res.status(400).json({ message: "Item already exists in your watchlist" });
     }
 
-    // 3. If it doesn't exist, proceed with saving it normally
-    const newItem = new WatchlistItem(req.body);
+    const newItem = new WatchlistItem({
+      userId: req.user.id, // 🚨 Stamp the item with the user's ID before saving!
+      apiId: req.body.apiId,
+      title: req.body.title,
+      posterUrl: req.body.posterUrl,
+      mediaType: req.body.mediaType,
+      watchStatus: req.body.watchStatus,
+      userRating: req.body.userRating
+    });
+
     const savedItem = await newItem.save();
     res.status(201).json(savedItem);
-
   } catch (error) {
-    res.status(500).json({ message: "Failed to save item", error: error.message });
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ==========================================
+// PUT: Update an item (Status, Rating, Notes)
+// ==========================================
+router.put('/:id', verify, async (req, res) => {
+  try {
+    // 🚨 Ensure they only update THEIR OWN items
+    const updatedItem = await WatchlistItem.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.id }, 
+      req.body,
+      { new: true }
+    );
+    if (!updatedItem) return res.status(404).json({ message: "Item not found" });
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// ==========================================
+// DELETE: Remove an item
+// ==========================================
+router.delete('/:id', verify, async (req, res) => {
+  try {
+    // 🚨 Ensure they only delete THEIR OWN items
+    const deletedItem = await WatchlistItem.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
+    if (!deletedItem) return res.status(404).json({ message: "Item not found" });
+    res.json({ message: "Item deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 

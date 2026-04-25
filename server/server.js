@@ -31,6 +31,8 @@ mongoose.connect(process.env.MONGO_URI, {
 const watchlistRoutes = require('./routes/watchlist');
 app.use('/api/watchlist', watchlistRoutes);
 
+const authRoute = require('./routes/auth');
+app.use('/api/auth', authRoute);
 // Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ message: "Server is alive and kicking!" });

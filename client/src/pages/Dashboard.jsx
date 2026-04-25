@@ -3,10 +3,21 @@ import AdvancedSearch from '../components/Anime/AdvancedSearch';
 import TopAnimeList from '../components/Anime/TopAnimeList';
 import AnimeSearchAndFilter from '../components/Anime/AnimeSearchAndFilter';
 import axios from 'axios';
+import { useState, useEffect, useContext } from 'react'; // 🚨 Added useContext
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // 🚨 Importing our AuthContext
+
 
 function Dashboard({ onAnimeAdded }) {
+  const { user } = useContext(AuthContext); // 🚨 Read the login state
+  const navigate = useNavigate(); // 🚨 Setup the navigator
   
   const handleAddToDatabase = async (anime) => {
+    if (!user) {
+      alert("Please log in or create an account to start building your library!");
+      navigate('/auth'); // Teleport them to the login page
+      return; // Stop the function so it doesn't crash the backend
+    }
     const newAnimeData = {
       apiId: anime.mal_id,
       title: anime.title_english || anime.title,

@@ -1,9 +1,20 @@
 import axios from 'axios';
 import MovieCarousel from '../components/Movie/MovieCarousel'; // 🚨 NEW IMPORT
 import MovieSearchAndFilter from '../components/Movie/MovieSearchAndFilter';
+import { useContext } from 'react'; // 🚨 Import useContext
+import { useNavigate } from 'react-router-dom'; // 🚨 Import useNavigate
+import { AuthContext } from '../context/AuthContext'; // 🚨 Import our AuthContext
+
 function MovieDashboard() {
-  
+  const { user } = useContext(AuthContext); 
+  const navigate = useNavigate();
+
   const handleAddToDatabase = async (movie) => {
+    if (!user) {
+      alert("Please log in or create an account to start building your library!");
+      navigate('/auth'); 
+      return; 
+    }
     const newMovieData = {
       apiId: `tmdb-${movie.id}`,
       title: movie.title,
