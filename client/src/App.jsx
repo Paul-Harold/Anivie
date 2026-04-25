@@ -5,6 +5,7 @@ import MovieDashboard from './pages/MovieDashboard';
 import CategoryPage from './pages/CategoryPage';
 import MyWatchlist from './pages/MyWatchlist';
 import MovieCategoryPage from './pages/MovieCategoryPage';
+import ItemDetails from './pages/ItemDetails';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/movies" element={<MovieDashboard />} />
             <Route path="/category/:type" element={<CategoryPage />} />
             <Route path="/mylist" element={<MyWatchlist />} />
+            <Route path="/details/:type/:id" element={<ItemDetails />} />
             <Route path="/movies/category/:type" element={<MovieCategoryPage />} />
           </Routes>
         </div>

@@ -27,6 +27,15 @@ router.get('/', async (req, res) => {
     res.status(500).json({ message: "Error fetching items", error: error.message });
   }
 });
+router.get('/api/:apiId', async (req, res) => {
+  try {
+    // Searches your database for the specific TMDB or Jikan ID
+    const item = await WatchlistItem.findOne({ apiId: req.params.apiId });
+    res.status(200).json(item); // Will return null if you haven't added it to your list yet
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching item", error: error.message });
+  }
+});
 
 router.delete('/:id', async (req, res) => {
   try {
