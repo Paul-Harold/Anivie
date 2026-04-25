@@ -9,7 +9,8 @@ const watchlistSchema = new mongoose.Schema({
   posterUrl: String,
   mediaType: String,
   watchStatus: String,
-  userRating: Number
+  userRating: Number,
+  personalNotes: String
 });
 
 const WatchlistItem = mongoose.model('WatchlistItem', watchlistSchema);
