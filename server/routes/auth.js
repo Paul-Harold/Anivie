@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail'); 
 
-const JWT_SECRET = process.env.JWT_SECRET || "super_secret_anivie_key_2026";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ==========================================
 // POST: Register & Send Email
