@@ -68,7 +68,7 @@ function ItemDetails() {
           });
         }
 
-        const dbRes = await axios.get(`anivie-backend.vercel.app/api/watchlist/api/${id}`);
+        const dbRes = await axios.get(`https://anivie-backend.vercel.app/api/watchlist/api/${id}`);
         if (dbRes.data) {
           setDbItem(dbRes.data);
           setNotes(dbRes.data.personalNotes || '');
@@ -92,7 +92,7 @@ function ItemDetails() {
     
     setIsSaving(true);
     try {
-      await axios.put(`anivie-backend.vercel.app/api/watchlist/${dbItem._id}`, {
+      await axios.put(`https://anivie-backend.vercel.app/api/watchlist/${dbItem._id}`, {
         watchStatus: status,
         userRating: rating,
         personalNotes: notes

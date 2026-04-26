@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
     await newUser.save();
 
     // Send the verification email
-    const verificationLink = `anivie-backend.vercel.app/api/auth/verify/${verificationToken}`;
+    const verificationLink = `https://anivie-backend.vercel.app/api/auth/verify/${verificationToken}`;
     const emailHtml = `
       <div style="font-family: sans-serif; padding: 20px;">
         <h2>Welcome to AniVie, ${username}!</h2>

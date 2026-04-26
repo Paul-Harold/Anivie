@@ -23,7 +23,7 @@ function WatchlistCard({ item, onDelete, onUpdate }) {
     setIsUpdating(true);
     try {
       // 🚨 This hits the PUT route in your backend to update the database instantly!
-      const response = await axios.put(`anivie-backend.vercel.app/api/watchlist/${item._id}`, {
+      const response = await axios.put(`https://anivie-backend.vercel.app/api/watchlist/${item._id}`, {
         watchStatus: newStatus,
         userRating: newRating
       });
@@ -41,7 +41,7 @@ function WatchlistCard({ item, onDelete, onUpdate }) {
     if (!window.confirm(`Are you sure you want to remove ${item.title}?`)) return;
     
     try {
-      await axios.delete(`anivie-backend.vercel.app/api/watchlist/${item._id}`);
+      await axios.delete(`https://anivie-backend.vercel.app/api/watchlist/${item._id}`);
       onDelete(item._id);
     } catch (error) {
       console.error("Error deleting:", error);
