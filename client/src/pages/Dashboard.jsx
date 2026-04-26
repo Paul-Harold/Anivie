@@ -28,7 +28,7 @@ function Dashboard({ onAnimeAdded }) {
     };
 
     try {
-          await axios.post('http://localhost:5000/api/watchlist', newAnimeData);
+          await axios.post('anivie-backend.vercel.app/api/watchlist', newAnimeData);
           alert(`Added ${newAnimeData.title} to your watchlist!`);
         } catch (error) {
           // 🚨 NEW: Check if the error is our custom 400 Duplicate Error from the backend

@@ -8,7 +8,7 @@ function AnimeCard({ anime, onDelete }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/watchlist/${anime._id}`);
+      await axios.delete(`anivie-backend.vercel.app/api/watchlist/${anime._id}`);
       onDelete(anime._id);
     } catch (error) {
       console.error("Error deleting anime:", error);
@@ -19,7 +19,7 @@ function AnimeCard({ anime, onDelete }) {
   const handleUpdate = async (newStatus, newRating) => {
     try {
       // Send the updated data to the backend
-      await axios.put(`http://localhost:5000/api/watchlist/${anime._id}`, {
+      await axios.put(`anivie-backend.vercel.app/api/watchlist/${anime._id}`, {
         watchStatus: newStatus,
         userRating: newRating
       });

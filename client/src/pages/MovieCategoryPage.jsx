@@ -56,7 +56,7 @@ function MovieCategoryPage() {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/watchlist', newMovieData);
+      await axios.post('anivie-backend.vercel.app/api/watchlist', newMovieData);
       alert(`Added ${newMovieData.title} to your watchlist!`);
     } catch (error) {
       if (error.response && error.response.status === 400) {

@@ -15,7 +15,7 @@ function MyWatchlist() {
   useEffect(() => {
     const fetchList = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/watchlist');
+        const response = await axios.get('anivie-backend.vercel.app/api/watchlist');
         setWatchlist(response.data);
       } catch (error) {
         console.error("Error fetching watchlist:", error);

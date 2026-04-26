@@ -65,7 +65,7 @@ function CategoryPage({ onAnimeAdded }) {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/watchlist', newAnimeData);
+      const response = await axios.post('anivie-backend.vercel.app/api/watchlist', newAnimeData);
       onAnimeAdded(response.data);
       alert(`Added ${newAnimeData.title} to your watchlist!`);
     } catch (error) {

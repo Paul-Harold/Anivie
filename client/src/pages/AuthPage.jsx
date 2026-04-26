@@ -19,12 +19,12 @@ function AuthPage() {
     try {
       if (isLogin) {
         // Handle Login
-        const res = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+        const res = await axios.post('anivie-backend.vercel.app/api/auth/login', { username, password });
         login(res.data.token, res.data.user);
         navigate('/mylist'); // Send them to their library!
       } else {
         // Handle Registration
-        await axios.post('http://localhost:5000/api/auth/register', { email, username, password });
+        await axios.post('anivie-backend.vercel.app/api/auth/register', { email, username, password });
         // Automatically switch back to login mode after successful registration
         setIsLogin(true);
         alert('Account created! Please log in.');

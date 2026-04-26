@@ -31,7 +31,7 @@ function SearchBar({ onAdd }) {
 
     try {
       // Send it to our Node backend
-      const response = await axios.post('http://localhost:5000/api/watchlist', newAnimeData);
+      const response = await axios.post('anivie-backend.vercel.app/api/watchlist', newAnimeData);
       
       // Tell App.jsx to draw the new card
       onAdd(response.data);
