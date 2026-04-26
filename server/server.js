@@ -11,7 +11,13 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]);
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://anivie.vercel.app"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // ==========================================
