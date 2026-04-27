@@ -2,9 +2,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dns = require('node:dns'); // Import the DNS module
 require('dotenv').config();
 
 // FIX: setServers must be called on the dns module
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const app = express();
 

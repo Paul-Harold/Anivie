@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 function MovieSearchAndFilter({ onAdd }) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState('');
   const [year, setYear] = useState('');
@@ -147,14 +149,24 @@ function MovieSearchAndFilter({ onAdd }) {
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {results.map((movie) => (
-              <div key={movie.id} className="bg-ani-dark rounded-lg overflow-hidden flex flex-col group shadow-md border border-gray-800">
+              <div 
+                key={movie.id} 
+                className="bg-ani-dark rounded-lg overflow-hidden flex flex-col group shadow-md border border-gray-800 cursor-pointer"
+                onClick={() => navigate(`/details/movie/${movie.id}`)}
+              >
                 <div className="h-[240px] relative overflow-hidden bg-gray-900">
                   <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <div className="p-3 flex flex-col flex-grow">
                   <p className="text-xs font-bold text-ani-text mb-1 line-clamp-2" title={movie.title}>{movie.title}</p>
                   <p className="text-[10px] text-ani-subtext mb-2">{movie.release_date ? movie.release_date.split('-')[0] : 'N/A'} • ⭐ {movie.vote_average.toFixed(1)}</p>
-                  <button onClick={() => { onAdd(movie); }} className="mt-auto w-full py-1.5 bg-[#0d253f] border border-[#90cea1] text-[#90cea1] rounded text-xs font-bold transition-colors hover:bg-[#90cea1] hover:text-[#0d253f]">
+                  <button 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      onAdd(movie); 
+                    }} 
+                    className="mt-auto w-full py-1.5 bg-[#0d253f] border border-[#90cea1] text-[#90cea1] rounded text-xs font-bold transition-colors hover:bg-[#90cea1] hover:text-[#0d253f]"
+                  >
                     + Add to List
                   </button>
                 </div>

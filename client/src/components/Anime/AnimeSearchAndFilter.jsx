@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function AnimeSearchAndFilter({ onAdd }) {
   const [query, setQuery] = useState('');
@@ -14,6 +15,21 @@ function AnimeSearchAndFilter({ onAdd }) {
   const [activeParams, setActiveParams] = useState(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
+  const [addingId, setAddingId] = useState(null);
+
+const handleAddClick = async (e, anime) => {
+    e.stopPropagation(); // Protect the card click!
+    setAddingId(anime.mal_id); 
+    
+    try {
+      await onAdd(anime);
+    } catch (error) {
+      console.error("Failed to add:", error);
+    } finally {
+      setAddingId(null); 
+    }
+  };
 
   const genres = [
     { id: 1, name: "Action" }, { id: 2, name: "Adventure" },
@@ -127,20 +143,45 @@ function AnimeSearchAndFilter({ onAdd }) {
            </div>
           
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {results.map((anime) => (
-              <div key={anime.mal_id} className="bg-ani-dark rounded-lg overflow-hidden flex flex-col group shadow-md border border-gray-800">
+            {results.map((anime) => {
+              const isAdding = addingId === anime.mal_id;
+
+          return (
+              <div 
+                key={anime.mal_id} 
+                className="bg-ani-dark rounded-lg overflow-hidden flex flex-col group shadow-md border border-gray-800 cursor-pointer"
+                onClick={() => navigate(`/details/anime/${anime.mal_id}`)}
+              >
                 <div className="h-[240px] relative overflow-hidden bg-gray-900">
                   <img src={anime.images.jpg.image_url} alt="poster" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
                 </div>
                 <div className="p-3 flex flex-col flex-grow">
                   <p className="text-xs font-bold text-ani-text mb-1 line-clamp-2" title={anime.title_english || anime.title}>{anime.title_english || anime.title}</p>
                   <p className="text-[10px] text-ani-subtext mb-2">{anime.year || 'N/A'} • ⭐ {anime.score || 'N/A'}</p>
-                  <button onClick={() => { onAdd(anime); }} className="mt-auto w-full py-1.5 bg-[#0d253f] border border-ani-blue text-ani-blue rounded text-xs font-bold transition-colors hover:bg-ani-blue hover:text-[#0d253f]">
-                    + Add to List
-                  </button>
+                  <button 
+                  onClick={(e) => handleAddClick(e, anime)}
+                  disabled={isAdding}
+                  className={`mt-auto w-full py-1.5 rounded text-xs font-bold transition-colors flex justify-center items-center gap-2 ${
+                    isAdding 
+                      ? 'bg-blue-400 text-white cursor-not-allowed' 
+                      : 'bg-[#0d253f] border border-ani-blue text-ani-blue hover:bg-ani-blue hover:text-[#0d253f]'
+                  }`}
+                >
+                  {isAdding ? (
+                    <>
+                      <svg className="animate-spin h-3 w-3 text-white" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Adding...
+                    </>
+                  ) : (
+                    '+ Add to List'
+                  )}
+                </button>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
 
           {/* 🚨 NEW: The Pagination UI controls */}

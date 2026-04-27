@@ -4,10 +4,11 @@ import axios from 'axios';
 export const AuthContext = createContext();
 
 // 🚨 THE FIX: A Smart Interceptor that intercepts every outgoing request
+// 🚨 THE FIX: A Smart Interceptor that intercepts every outgoing request
 axios.interceptors.request.use(
   (config) => {
-    // 1. If talking to external APIs, strip the authorization header so they don't block us!
-    if (config.url.includes('jikan.moe') || config.url.includes('themoviedb.org')) {
+    // 1. Safety check added: Make sure config.url exists before running .includes()
+    if (config.url && (config.url.includes('jikan.moe') || config.url.includes('themoviedb.org'))) {
       delete config.headers['Authorization'];
     } else {
       // 2. If talking to our backend, attach the VIP pass!
@@ -20,7 +21,6 @@ axios.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);

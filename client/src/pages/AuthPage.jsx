@@ -11,9 +11,11 @@ function AuthPage() {
   const [email, setEmail] = useState('');
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setError('');
 
     try {
@@ -31,6 +33,9 @@ function AuthPage() {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Something went wrong.');
+    }
+    finally {
+    setIsLoading(false);
     }
   };
 
@@ -79,9 +84,39 @@ function AuthPage() {
             />
           </div>
 
-          <button type="submit" className="w-full py-3 mt-4 bg-ani-blue text-white font-bold rounded hover:bg-blue-400 transition-colors shadow-lg">
-            {isLogin ? 'Sign In' : 'Create Account'}
-          </button>
+          <button 
+  type="submit" 
+  disabled={isLoading}
+  className={`w-full py-3 mt-4 text-white font-bold rounded transition-colors shadow-lg flex items-center justify-center space-x-2 ${
+    isLoading ? 'bg-blue-400 cursor-not-allowed opacity-80' : 'bg-ani-blue hover:bg-blue-400'
+  }`}
+>
+  {isLoading && (
+    <svg 
+      className="animate-spin h-5 w-5 text-white" 
+      xmlns="http://www.w3.org/2000/svg" 
+      fill="none" 
+      viewBox="0 0 24 24"
+    >
+      <circle 
+        className="opacity-25" 
+        cx="12" 
+        cy="12" 
+        r="10" 
+        stroke="currentColor" 
+        strokeWidth="4"
+      ></circle>
+      <path 
+        className="opacity-75" 
+        fill="currentColor" 
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  )}
+  <span>
+    {isLoading ? 'Processing...' : (isLogin ? 'Sign In' : 'Create Account')}
+  </span>
+</button>
         </form>
 
         <p className="text-center text-ani-subtext text-sm mt-6">
