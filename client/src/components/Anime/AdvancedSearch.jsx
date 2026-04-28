@@ -2,7 +2,6 @@ import { useState } from 'react';
 import axios from 'axios';
 
 function AdvancedSearch({ onAdd }) {
-  // State for all our different filters
   const [query, setQuery] = useState('');
   const [format, setFormat] = useState('');
   const [status, setStatus] = useState('');

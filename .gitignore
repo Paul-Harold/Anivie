@@ -1,6 +1,5 @@
 node_modules/
 .env
-# 🚨 SECURITY: NEVER COMMIT THESE! 🚨
 .env
 .env.local
 .env.development
@@ -12,7 +11,7 @@ node_modules/
 /client/node_modules/
 /server/node_modules/
 
-# Build artifacts (Vite/React compiled code)
+
 dist/
 dist-ssr/
 build/

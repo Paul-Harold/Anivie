@@ -142,7 +142,7 @@ const handleAddClick = async (e, anime) => {
               <button onClick={clearResults} className="text-ani-subtext text-xs hover:text-white">Clear Results</button>
            </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
             {results.map((anime) => {
               const isAdding = addingId === anime.mal_id;
 

@@ -3,8 +3,6 @@ import axios from 'axios';
 
 export const AuthContext = createContext();
 
-// 🚨 THE FIX: A Smart Interceptor that intercepts every outgoing request
-// 🚨 THE FIX: A Smart Interceptor that intercepts every outgoing request
 axios.interceptors.request.use(
   (config) => {
     // 1. Safety check added: Make sure config.url exists before running .includes()
