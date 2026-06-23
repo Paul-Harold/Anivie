@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import WatchlistCard from '../components/MyList/WatchlistCard';
+import { AuthContext } from '../context/AuthContext';
 
 function MyWatchlist() {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [watchlist, setWatchlist] = useState([]);
-  const [activeTab, setActiveTab] = useState('All'); 
+  const [activeTab, setActiveTab] = useState('All');
   const [isLoading, setIsLoading] = useState(true);
 
   // 🚨 NEW: State for our advanced list filters
@@ -13,6 +16,10 @@ function MyWatchlist() {
   const [ratingFilter, setRatingFilter] = useState('All');
 
   useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
     const fetchList = async () => {
       try {
         const response = await axios.get('https://anivie-backend.vercel.app/api/watchlist');
@@ -24,7 +31,7 @@ function MyWatchlist() {
       }
     };
     fetchList();
-  }, []);
+  }, [user]);
 
   const handleItemUpdated = (updatedItem) => {
     setWatchlist(prevList => 
@@ -67,22 +74,22 @@ function MyWatchlist() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4">
-      
+    <div className="max-w-6xl mx-auto py-6 px-4 animate-fade-in">
+
       {/* HEADER & MAIN TABS */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-        <h1 className="text-3xl font-bold text-ani-text border-l-4 border-gray-500 pl-4">
+        <h1 className="text-3xl font-black text-ani-text border-l-4 border-ani-blue pl-4">
           My Library
         </h1>
-        
-        <div className="flex bg-ani-card p-1 rounded-lg border border-gray-800 shadow-md">
-          <button onClick={() => setActiveTab('All')} className={`px-6 py-2 text-sm font-bold rounded transition-colors ${activeTab === 'All' ? 'bg-gray-700 text-white' : 'text-ani-subtext hover:text-white'}`}>
+
+        <div className="flex bg-ani-card p-1 rounded-lg border border-ani-border shadow-card">
+          <button onClick={() => setActiveTab('All')} className={`px-6 py-2 text-sm font-bold rounded-md transition-colors ${activeTab === 'All' ? 'bg-ani-elevated text-white' : 'text-ani-subtext hover:text-white'}`}>
             Everything
           </button>
-          <button onClick={() => setActiveTab('Anime')} className={`px-6 py-2 text-sm font-bold rounded transition-colors ${activeTab === 'Anime' ? 'bg-ani-blue text-white' : 'text-ani-subtext hover:text-white'}`}>
+          <button onClick={() => setActiveTab('Anime')} className={`px-6 py-2 text-sm font-bold rounded-md transition-colors ${activeTab === 'Anime' ? 'bg-ani-blue text-ani-dark' : 'text-ani-subtext hover:text-white'}`}>
             Anime
           </button>
-          <button onClick={() => setActiveTab('Movie')} className={`px-6 py-2 text-sm font-bold rounded transition-colors ${activeTab === 'Movie' ? 'bg-[#90cea1] text-[#0d253f]' : 'text-ani-subtext hover:text-white'}`}>
+          <button onClick={() => setActiveTab('Movie')} className={`px-6 py-2 text-sm font-bold rounded-md transition-colors ${activeTab === 'Movie' ? 'bg-ani-movie text-ani-dark' : 'text-ani-subtext hover:text-white'}`}>
             Movies
           </button>
         </div>
@@ -90,15 +97,15 @@ function MyWatchlist() {
 
       {/* 🚨 NEW: SECONDARY FILTER BAR */}
       {!isLoading && watchlist.length > 0 && (
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-ani-card p-4 rounded-lg border border-gray-800 shadow-md mb-8">
-          
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-ani-card p-4 rounded-xl border border-ani-border shadow-card mb-8">
+
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center gap-2">
               <label className="text-ani-subtext text-xs font-bold">Status:</label>
-              <select 
-                value={statusFilter} 
+              <select
+                value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-ani-dark text-ani-text text-sm p-2 rounded outline-none border border-gray-700 cursor-pointer focus:border-white min-w-[150px]"
+                className="bg-ani-dark text-ani-text text-sm p-2 rounded-lg outline-none border border-ani-border cursor-pointer focus:border-ani-blue min-w-[150px]"
               >
                 <option value="All">All Statuses</option>
                 <option value="Plan to Watch">Plan to Watch</option>
@@ -110,10 +117,10 @@ function MyWatchlist() {
 
             <div className="flex items-center gap-2">
               <label className="text-ani-subtext text-xs font-bold">Rating:</label>
-              <select 
-                value={ratingFilter} 
+              <select
+                value={ratingFilter}
                 onChange={(e) => setRatingFilter(e.target.value)}
-                className="bg-ani-dark text-ani-text text-sm p-2 rounded outline-none border border-gray-700 cursor-pointer focus:border-white min-w-[120px]"
+                className="bg-ani-dark text-ani-text text-sm p-2 rounded-lg outline-none border border-ani-border cursor-pointer focus:border-ani-blue min-w-[120px]"
               >
                 <option value="All">All Ratings</option>
                 <option value="10">⭐ 10 (Masterpiece)</option>
@@ -131,7 +138,7 @@ function MyWatchlist() {
             </div>
           </div>
 
-          <div className="text-ani-subtext text-sm font-bold bg-ani-dark px-4 py-2 rounded border border-gray-700">
+          <div className="text-ani-subtext text-sm font-bold bg-ani-dark px-4 py-2 rounded-lg border border-ani-border tabular-nums">
             Showing {filteredList.length} {filteredList.length === 1 ? 'Title' : 'Titles'}
           </div>
 
@@ -140,17 +147,29 @@ function MyWatchlist() {
 
       {/* THE GRID */}
       {isLoading ? (
-        <div className="text-center py-20 text-ani-subtext font-bold animate-pulse">Loading library...</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={`skel-${i}`} className="rounded-lg overflow-hidden flex flex-col bg-ani-card">
+              <div className="h-[240px] skeleton" />
+              <div className="p-4 flex flex-col gap-2">
+                <div className="h-4 w-3/4 rounded skeleton" />
+                <div className="h-7 w-full rounded skeleton mt-2" />
+                <div className="h-7 w-full rounded skeleton" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : watchlist.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-ani-card rounded-lg border border-gray-800 border-dashed">
-          <p className="text-ani-subtext text-lg mb-6">Nothing to see here.</p>
+        <div className="flex flex-col items-center justify-center py-20 bg-ani-card rounded-xl border border-ani-border border-dashed">
+          <svg className="w-12 h-12 text-ani-subtext/40 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+          <p className="text-ani-subtext text-lg mb-6">Your library is empty.</p>
           <div className="flex gap-4">
-            <Link to="/" className="px-6 py-2 bg-ani-blue text-white rounded font-bold hover:bg-blue-400 transition-colors">Find Anime</Link>
-            <Link to="/movies" className="px-6 py-2 bg-[#0d253f] border border-[#90cea1] text-[#90cea1] rounded font-bold hover:bg-[#90cea1] hover:text-[#0d253f] transition-colors">Find Movies</Link>
+            <Link to="/" className="px-6 py-2.5 bg-ani-blue text-ani-dark rounded-lg font-bold hover:bg-white transition-colors active:scale-95">Find Anime</Link>
+            <Link to="/movies" className="px-6 py-2.5 bg-ani-movie/10 border border-ani-movie text-ani-movie rounded-lg font-bold hover:bg-ani-movie hover:text-ani-dark transition-colors active:scale-95">Find Movies</Link>
           </div>
         </div>
       ) : filteredList.length === 0 ? (
-        <div className="text-center py-20 text-ani-subtext">No titles match your current filters.</div>
+        <div className="text-center py-20 text-ani-subtext bg-ani-card rounded-xl border border-ani-border border-dashed">No titles match your current filters.</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-6">
           {filteredList.map((item) => (

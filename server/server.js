@@ -12,10 +12,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://anivie.vercel.app"
-  ],
+  origin: (origin, callback) => {
+    const allowed = /^http:\/\/localhost:\d+$/.test(origin) || origin === "https://anivie.vercel.app";
+    if (!origin || allowed) callback(null, true);
+    else callback(new Error("Not allowed by CORS"));
+  },
   credentials: true
 }));
 app.use(express.json());

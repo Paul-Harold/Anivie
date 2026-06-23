@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -7,6 +7,7 @@ const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 function MovieCategoryPage() {
   const { type } = useParams();
+  const navigate = useNavigate();
   const [movieList, setMovieList] = useState([]);
   
   const [page, setPage] = useState(1);
@@ -85,41 +86,56 @@ function MovieCategoryPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4">
-      <div className="flex justify-between items-center mb-8">
+    <div className="max-w-6xl mx-auto py-6 px-4 animate-fade-in">
+      <div className="flex justify-between items-center mb-8 gap-4 flex-wrap">
         <div className="flex items-center gap-4">
-          <Link to="/movies" className="text-[#90cea1] hover:text-white transition-colors font-bold flex items-center gap-2">
-            ← Back to Movies
+          <Link to="/movies" className="text-ani-movie hover:text-white transition-colors font-bold flex items-center gap-1.5">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+            Back to Movies
           </Link>
-          <h1 className="text-3xl font-bold text-ani-text border-l-2 border-gray-700 pl-4">
+          <h1 className="text-3xl font-black text-ani-text border-l-4 border-ani-movie pl-4">
             {currentCategory.title}
           </h1>
         </div>
-        <div className="text-ani-subtext font-semibold bg-ani-card px-4 py-2 rounded-lg">
+        <div className="text-ani-subtext font-semibold bg-ani-card border border-ani-border px-4 py-2 rounded-lg tabular-nums">
           Page {page}
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center items-center h-[50vh]">
-          <p className="text-[#90cea1] text-xl font-bold animate-pulse">Loading Movies...</p>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {Array.from({ length: 15 }).map((_, i) => (
+            <div key={`skel-${i}`} className="bg-ani-card rounded-lg overflow-hidden flex flex-col">
+              <div className="h-[280px] skeleton" />
+              <div className="p-3 flex flex-col gap-2">
+                <div className="h-3 w-3/4 rounded skeleton" />
+                <div className="h-7 w-full rounded skeleton" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {movieList.map((movie) => (
-            <div key={movie.id} className="bg-ani-card rounded-lg overflow-hidden flex flex-col group shadow-lg">
+            <div key={movie.id} onClick={() => navigate(`/details/movie/${movie.id}`)} className="bg-ani-card rounded-lg overflow-hidden flex flex-col group shadow-card ring-1 ring-white/5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:ring-ani-movie/50 hover:shadow-card-hover">
               <div className="h-[280px] overflow-hidden relative bg-ani-dark">
                 {movie.poster_path ? (
-                  <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt="poster" className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+                  <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 ) : (
                    <div className="flex items-center justify-center h-full text-ani-subtext text-xs">No Image</div>
                 )}
+                {typeof movie.vote_average === 'number' && movie.vote_average > 0 && (
+                  <span className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm text-[#f5c518] text-[11px] font-bold px-1.5 py-0.5 rounded-md tabular-nums">
+                    <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15.9 4.8 17.6l1-5.8L1.5 7.7l5.9-.9z" /></svg>
+                    {movie.vote_average.toFixed(1)}
+                  </span>
+                )}
               </div>
               <div className="p-3 flex flex-col flex-grow">
-                <p className="text-xs font-bold text-ani-text mb-3 line-clamp-2">{movie.title}</p>
-                <button 
-                  onClick={() => handleAddToDatabase(movie)}
-                  className="mt-auto w-full py-1.5 bg-[#0d253f] border border-[#90cea1] text-[#90cea1] rounded text-xs font-bold transition-colors hover:bg-[#90cea1] hover:text-[#0d253f]"
+                <p className="text-xs font-bold text-ani-text mb-3 line-clamp-2 transition-colors group-hover:text-ani-movie">{movie.title}</p>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleAddToDatabase(movie); }}
+                  className="mt-auto w-full py-1.5 bg-ani-movie/10 border border-ani-movie/60 text-ani-movie rounded-lg text-xs font-bold transition-colors hover:bg-ani-movie hover:text-ani-dark active:scale-95"
                 >
                   + Add
                 </button>
@@ -131,26 +147,26 @@ function MovieCategoryPage() {
 
       {/* Pagination Controls */}
       {!isLoading && totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-12 mb-8 flex-wrap">
-          <button onClick={() => setPage(prev => prev - 1)} disabled={page === 1} className="px-4 py-2 bg-ani-card text-ani-text font-bold rounded disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors">
+        <div className="flex justify-center items-center gap-2 mt-12 mb-8 flex-wrap tabular-nums">
+          <button onClick={() => setPage(prev => prev - 1)} disabled={page === 1} className="px-4 py-2 bg-ani-card text-ani-text font-bold rounded-lg border border-ani-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-ani-elevated transition-colors">
             Prev
           </button>
-          
+
           {getPageNumbers()[0] > 1 && (
-            <><button onClick={() => setPage(1)} className="w-10 h-10 flex items-center justify-center bg-ani-dark text-ani-text font-bold rounded hover:bg-gray-700 transition-colors">1</button><span className="text-ani-subtext px-2">...</span></>
+            <><button onClick={() => setPage(1)} className="w-10 h-10 flex items-center justify-center bg-ani-dark text-ani-text font-bold rounded-lg border border-ani-border hover:bg-ani-elevated transition-colors">1</button><span className="text-ani-subtext px-2">...</span></>
           )}
 
           {getPageNumbers().map(pageNum => (
-            <button key={pageNum} onClick={() => setPage(pageNum)} className={`w-10 h-10 flex items-center justify-center font-bold rounded transition-colors ${page === pageNum ? 'bg-[#90cea1] text-[#0d253f]' : 'bg-ani-dark text-ani-text hover:bg-gray-700'}`}>
+            <button key={pageNum} onClick={() => setPage(pageNum)} className={`w-10 h-10 flex items-center justify-center font-bold rounded-lg border transition-colors ${page === pageNum ? 'bg-ani-movie border-ani-movie text-ani-dark' : 'bg-ani-dark border-ani-border text-ani-text hover:bg-ani-elevated'}`}>
               {pageNum}
             </button>
           ))}
 
           {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
-            <><span className="text-ani-subtext px-2">...</span><button onClick={() => setPage(totalPages)} className="px-3 h-10 flex items-center justify-center bg-ani-dark text-ani-text font-bold rounded hover:bg-gray-700 transition-colors text-xs">{totalPages}</button></>
+            <><span className="text-ani-subtext px-2">...</span><button onClick={() => setPage(totalPages)} className="px-3 h-10 flex items-center justify-center bg-ani-dark text-ani-text font-bold rounded-lg border border-ani-border hover:bg-ani-elevated transition-colors text-xs">{totalPages}</button></>
           )}
 
-          <button onClick={() => setPage(prev => prev + 1)} disabled={page === totalPages} className="px-4 py-2 bg-ani-card text-ani-text font-bold rounded disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-700 transition-colors">
+          <button onClick={() => setPage(prev => prev + 1)} disabled={page === totalPages} className="px-4 py-2 bg-ani-card text-ani-text font-bold rounded-lg border border-ani-border disabled:opacity-30 disabled:cursor-not-allowed hover:bg-ani-elevated transition-colors">
             Next
           </button>
         </div>

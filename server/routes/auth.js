@@ -66,7 +66,7 @@ router.get('/verify/:token', async (req, res) => {
     await user.save();
 
     // Teleport them back to the frontend login page
-    res.redirect('http://localhost:5173/auth?verified=true');
+    res.redirect('https://anivie.vercel.app/auth?verified=true');
   } catch (error) {
     res.status(500).send("Server Error");
   }

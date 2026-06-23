@@ -38,10 +38,15 @@ function MovieDashboard() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4">
-      <h1 className="text-3xl font-bold text-ani-text mb-8 border-l-4 border-[#90cea1] pl-4">
-        Discover Movies
-      </h1>
+    <div className="max-w-6xl mx-auto py-6 px-4 animate-fade-in">
+      {/* Hero header */}
+      <div className="relative mb-8 overflow-hidden rounded-2xl border border-ani-border bg-gradient-to-br from-ani-card via-ani-card to-ani-dark p-7 sm:p-9">
+        <div className="absolute -top-16 -right-10 w-56 h-56 bg-ani-movie/10 rounded-full blur-3xl pointer-events-none" />
+        <p className="text-ani-movie text-xs font-bold uppercase tracking-widest mb-2">Movies on AniVie</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">Discover Movies</h1>
+        <p className="text-ani-subtext text-sm max-w-xl">Browse trending releases and timeless classics, then add them to your personal watchlist.</p>
+      </div>
+
           <MovieSearchAndFilter onAdd={handleAddToDatabase} />
        
       {/* 🚨 NEW: Our Stacked Movie Discovery Engine! */}

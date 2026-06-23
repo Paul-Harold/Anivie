@@ -97,8 +97,27 @@ function ItemDetails() {
     }
   };
 
-  if (isLoading) return <div className="text-center py-20 text-ani-subtext animate-pulse font-bold text-xl">Loading Cinematic Experience...</div>;
+  if (isLoading) return (
+    <div className="max-w-6xl mx-auto px-4 pt-[15vh] sm:pt-[20vh]">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-10">
+        <div className="w-full md:w-1/3 flex flex-col gap-6">
+          <div className="w-2/3 sm:w-1/2 md:w-full mx-auto md:mx-0 aspect-[2/3] rounded-xl skeleton" />
+          <div className="h-48 rounded-xl skeleton" />
+        </div>
+        <div className="w-full md:w-2/3 pt-4 flex flex-col gap-4">
+          <div className="h-12 w-2/3 rounded-lg skeleton" />
+          <div className="h-6 w-1/2 rounded skeleton" />
+          <div className="h-40 w-full rounded-xl skeleton mt-4" />
+        </div>
+      </div>
+    </div>
+  );
   if (!mediaData) return <div className="text-center py-20 text-white">Media not found.</div>;
+
+  // Type-aware accent so the detail view matches the rest of the app
+  const isMovie = type.toLowerCase() === 'movie';
+  const accentText = isMovie ? 'text-ani-movie' : 'text-ani-blue';
+  const accentBorder = isMovie ? 'border-ani-movie' : 'border-ani-blue';
 
   return (
     <div className="relative min-h-screen pb-20">
@@ -115,7 +134,10 @@ function ItemDetails() {
 
       {/* THE CONTENT */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 pt-[15vh] sm:pt-[20vh]">
-        <Link to="/mylist" className="text-ani-subtext hover:text-white mb-6 inline-block font-bold">← Back to List</Link>
+        <Link to="/mylist" className="text-ani-subtext hover:text-white mb-6 inline-flex items-center gap-1.5 font-bold transition-colors">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+          Back to List
+        </Link>
         
         {/* 🚨 Responsive Wrapper: flex-col on mobile, flex-row on desktop */}
         <div className="flex flex-col md:flex-row gap-8 md:gap-10">
@@ -125,28 +147,28 @@ function ItemDetails() {
           <div className="w-full md:w-1/3 flex flex-col gap-6">
             
             {/* 🚨 Poster Image: shrunk to 2/3 width and centered on mobile, full width on desktop */}
-            <img 
-              src={mediaData.poster} 
-              alt={mediaData.title} 
-              className="w-2/3 sm:w-1/2 md:w-full mx-auto md:mx-0 rounded-xl shadow-2xl border-4 border-gray-800" 
+            <img
+              src={mediaData.poster}
+              alt={mediaData.title}
+              className="w-2/3 sm:w-1/2 md:w-full mx-auto md:mx-0 rounded-xl shadow-2xl ring-1 ring-white/10"
             />
-            
+
             {/* THE DIGITAL DIARY ZONE */}
             {dbItem ? (
-              <div className="bg-ani-card p-5 sm:p-6 rounded-xl border border-gray-700 shadow-xl">
-                <h3 className="text-lg font-bold text-white mb-4 border-l-4 border-ani-blue pl-2">My Digital Diary</h3>
-                
+              <div className="bg-ani-card p-5 sm:p-6 rounded-xl border border-ani-border shadow-card">
+                <h3 className={`text-lg font-bold text-white mb-4 border-l-4 ${accentBorder} pl-3`}>My Digital Diary</h3>
+
                 <div className="flex justify-between items-center mb-4">
-                  <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-ani-dark text-white p-2 rounded outline-none border border-gray-700 text-sm flex-grow mr-2 sm:mr-4">
+                  <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-ani-dark text-white p-2 rounded-lg outline-none border border-ani-border focus:border-ani-blue text-sm flex-grow mr-2 sm:mr-4">
                     <option value="Plan to Watch">Plan to Watch</option>
                     <option value="Watching">Watching</option>
                     <option value="Completed">Completed</option>
                     <option value="Dropped">Dropped</option>
                   </select>
-                  
+
                   <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                    <span className="text-[#f5c518]">⭐</span>
-                    <select value={rating} onChange={(e) => setRating(Number(e.target.value))} className="bg-ani-dark text-white p-2 rounded outline-none border border-gray-700 text-sm">
+                    <svg className="w-4 h-4 text-[#f5c518] fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15.9 4.8 17.6l1-5.8L1.5 7.7l5.9-.9z" /></svg>
+                    <select value={rating} onChange={(e) => setRating(Number(e.target.value))} className="bg-ani-dark text-white p-2 rounded-lg outline-none border border-ani-border focus:border-ani-blue text-sm tabular-nums">
                       <option value="0">-</option>
                       {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
                     </select>
@@ -157,15 +179,15 @@ function ItemDetails() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Record your thoughts, favorite quotes, or memories here..."
-                  className="w-full bg-ani-dark text-gray-300 p-3 rounded outline-none border border-gray-700 focus:border-white resize-none h-32 sm:h-40 text-sm mb-4"
+                  className="w-full bg-ani-dark text-gray-300 p-3 rounded-lg outline-none border border-ani-border focus:border-ani-blue resize-none h-32 sm:h-40 text-sm mb-4"
                 />
 
-                <button onClick={saveDiaryEntry} className="w-full py-3 bg-ani-blue text-white font-bold rounded hover:bg-blue-400 transition-colors">
+                <button onClick={saveDiaryEntry} disabled={isSaving} className="w-full py-3 bg-ani-blue text-ani-dark font-bold rounded-lg hover:bg-white transition-colors active:scale-[0.98] disabled:opacity-70">
                   {isSaving ? 'Saved!' : 'Save Diary Entry'}
                 </button>
               </div>
             ) : (
-              <div className="bg-ani-card p-6 rounded-xl border border-gray-800 text-center">
+              <div className="bg-ani-card p-6 rounded-xl border border-ani-border border-dashed text-center">
                 <p className="text-ani-subtext text-sm">Add this to your watchlist to unlock your personal digital diary.</p>
               </div>
             )}
@@ -181,15 +203,18 @@ function ItemDetails() {
             
             {/* 🚨 Tags wrapper centered on mobile */}
             <div className="flex flex-wrap justify-center md:justify-start items-center gap-2 sm:gap-3 text-xs md:text-sm font-bold text-ani-subtext mb-8">
-              <span className="bg-gray-800 px-3 py-1 rounded-full text-white">{mediaData.year}</span>
-              <span className="bg-gray-800 px-3 py-1 rounded-full">{mediaData.runtime}</span>
-              <span>⭐ {mediaData.score} Global</span>
-              <span className="text-ani-blue pl-0 md:pl-2 md:border-l border-gray-700 block w-full md:w-auto mt-2 md:mt-0">{mediaData.genres}</span>
+              <span className="bg-ani-card border border-ani-border px-3 py-1 rounded-full text-white tabular-nums">{mediaData.year}</span>
+              <span className="bg-ani-card border border-ani-border px-3 py-1 rounded-full">{mediaData.runtime}</span>
+              <span className="flex items-center gap-1 text-white tabular-nums">
+                <svg className="w-4 h-4 text-[#f5c518] fill-current" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15.9 4.8 17.6l1-5.8L1.5 7.7l5.9-.9z" /></svg>
+                {mediaData.score} Global
+              </span>
+              <span className={`${accentText} pl-0 md:pl-3 md:border-l border-ani-border block w-full md:w-auto mt-2 md:mt-0`}>{mediaData.genres}</span>
             </div>
 
-            <h3 className="text-xl font-bold text-white mb-3 w-full">Synopsis</h3>
+            <h3 className={`text-xl font-bold text-white mb-3 w-full border-l-4 ${accentBorder} pl-3`}>Synopsis</h3>
             {/* 🚨 Keeping text-left for readability of long paragraphs, even on mobile */}
-            <p className="w-full text-left text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg mb-8 bg-ani-card/50 p-4 sm:p-6 rounded-xl border border-gray-800/50 backdrop-blur-sm">
+            <p className="w-full text-left text-gray-300 leading-relaxed text-sm sm:text-base md:text-lg mb-8 bg-ani-card/60 p-4 sm:p-6 rounded-xl border border-ani-border backdrop-blur-sm">
               {mediaData.synopsis || "No synopsis available."}
             </p>
 
@@ -202,20 +227,20 @@ function ItemDetails() {
 
             {mediaData.trailerId ? (
               <div className="mt-4 md:mt-8 w-full">
-                <h3 className="text-xl font-bold text-white mb-4 text-center md:text-left md:border-l-4 md:border-ani-blue md:pl-2">Official Trailer</h3>
-                <div className="relative w-full overflow-hidden rounded-xl shadow-2xl border border-gray-800" style={{ paddingTop: '56.25%' }}>
-                  <iframe 
+                <h3 className={`text-xl font-bold text-white mb-4 text-center md:text-left md:border-l-4 ${accentBorder} md:pl-3`}>Official Trailer</h3>
+                <div className="relative w-full overflow-hidden rounded-xl shadow-2xl border border-ani-border" style={{ paddingTop: '56.25%' }}>
+                  <iframe
                     className="absolute top-0 left-0 w-full h-full"
-                    src={`https://www.youtube.com/embed/${mediaData.trailerId}`} 
-                    title="YouTube video player" 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    src={`https://www.youtube.com/embed/${mediaData.trailerId}`}
+                    title={`${mediaData.title} trailer`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   ></iframe>
                 </div>
               </div>
             ) : (
-              <div className="mt-4 md:mt-8 p-6 bg-ani-card rounded-xl border border-gray-800 border-dashed text-center w-full">
+              <div className="mt-4 md:mt-8 p-6 bg-ani-card rounded-xl border border-ani-border border-dashed text-center w-full">
                 <p className="text-ani-subtext font-bold">No official trailer available.</p>
               </div>
             )}

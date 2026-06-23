@@ -1,5 +1,4 @@
 import AnimeCarousel from '../components/Anime/AnimeCarousel';
-import AdvancedSearch from '../components/Anime/AdvancedSearch';
 import TopAnimeList from '../components/Anime/TopAnimeList';
 import AnimeSearchAndFilter from '../components/Anime/AnimeSearchAndFilter';
 import axios from 'axios';
@@ -8,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext'; // 🚨 Importing our AuthContext
 
 
-function Dashboard({ onAnimeAdded }) {
+function Dashboard() {
   const { user } = useContext(AuthContext); // 🚨 Read the login state
   const navigate = useNavigate(); // 🚨 Setup the navigator
   
@@ -44,9 +43,15 @@ function Dashboard({ onAnimeAdded }) {
 
 
   return (
-    <div className="max-w-6xl mx-auto py-6">
-      <h1 className="text-3xl font-bold text-ani-text mb-8">Discover Anime</h1>
-      
+    <div className="max-w-6xl mx-auto py-6 animate-fade-in">
+      {/* Hero header */}
+      <div className="relative mb-8 overflow-hidden rounded-2xl border border-ani-border bg-gradient-to-br from-ani-card via-ani-card to-ani-dark p-7 sm:p-9">
+        <div className="absolute -top-16 -right-10 w-56 h-56 bg-ani-blue/10 rounded-full blur-3xl pointer-events-none" />
+        <p className="text-ani-blue text-xs font-bold uppercase tracking-widest mb-2">Welcome to AniVie</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">Discover Anime</h1>
+        <p className="text-ani-subtext text-sm max-w-xl">Track what you watch, rate your favorites, and build the ultimate watchlist — anime and movies in one place.</p>
+      </div>
+
       {/* 🚨 NEW: The Advanced Filter Engine */}
       <AnimeSearchAndFilter onAdd={handleAddToDatabase} />
       
